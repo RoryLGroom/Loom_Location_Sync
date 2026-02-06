@@ -38,3 +38,10 @@ PS C:\> <venv>\Scripts\Activate.ps1
 ## After virtual environment is created and activated, install dependencies by using command 
 
 pip install -r requirements.txt
+
+# Using Hologram API 
+create a seperate file in root directory called .env, and add a file called config.py. 
+
+In this file, add a variable called MY_API_KEY, and assign it the value of the hologram API key. 
+
+Ex. MY_API_KEY = "secret_key_here"
