@@ -1,13 +1,12 @@
 from pymongo import MongoClient
+import config
 
 # Connect to MongoDB
-client = MongoClient('mongodb://localhost:27017/')
-db = client['mydatabase']
-collection = db['mycollection']
+client = MongoClient(config.loom_mongo_uri)
+db = client['Biosphere']
+collection = db['BiosphereDendrometer_10']
 
-# Insert a document
-collection.insert_one({'name': 'Example', 'type': 'Test'})
+# Pull a document
+document = collection.find_one({"Packet.Number": 1})
 
-# Query a document
-document = collection.find_one({'name': 'Example'})
 print(document)
