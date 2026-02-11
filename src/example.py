@@ -9,22 +9,23 @@ client = MongoClient(uri)
 
 
 try:
+    #Hologram - Fetch 
     #retrieve lists of deviceswith one API call
-    hologram_url = "https://dashboard.hologram.io/api/1/devices/pages"
+    hologram_url = "https://dashboard.hologram.io/api/1/devices/?orgid=30237"
     #encode credentials using base64
     encoded_credentials = base64.b64encode(config.credentials.encode('utf-8')).decode('utf-8')
     #create header with hologram creds
     headers = {
-    'Authorization': f'Basic {encoded_credentials}',
-    "orgid": config.org_id,
-    "limit": 10
+    'Authorization': f'Basic {encoded_credentials}'
     }
     response = requests.get(hologram_url, headers= headers)
 
     print(response.text)
+
+    #Mongo
     #check devices with matching ID, if location doesnt exist, update
     query = { "DeviceID": {"$exists": True}, "Location": {"$exists": False}}
-    
+    """
 
     listOfDatabases= client.list_database_names()
     for database in listOfDatabases:
@@ -33,6 +34,6 @@ try:
     collection = database.get_collection("Test1")
 
     client.close
-
+"""
 except Exception as e:
     raise Exception("Unable to find the document due to the following error: ", e)
