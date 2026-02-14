@@ -39,7 +39,7 @@ try:
 
     # prints number of devices with actual location data. Right now, its about half. 
     #however, subsequent calls might return legitimate information. 
-    #print(clean_devices)
+    print(clean_devices)
     #print("Retrieved ", len(clean_devices), " devices with locations from Hologram")
 
 
