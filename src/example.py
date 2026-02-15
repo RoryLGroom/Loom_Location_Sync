@@ -30,16 +30,16 @@ try:
         all_devices.extend(data["data"])
 
     # filters list to only include devices with valid locations. When hologram sends out packets without location info, 
-    #long and lat will be empty strings
-    clean_devices = {}
+    #long and lat will be empty strings. Turns list into lookup table
+    clean_devices = []
     for device in all_devices:
         if device["latitude"] and device["longitude"]:
-            device["Last Updated"] = date.today().isoformat()
-            clean_devices[device["deviceid"]] = device
+            clean_devices.append(device)
+            #device["Last Updated"] = date.today().isoformat()
+            #clean_devices[device["deviceid"]] = device
 
     # prints number of devices with actual location data. Right now, its about half. 
     #however, subsequent calls might return legitimate information. 
-    print(clean_devices)
     #print("Retrieved ", len(clean_devices), " devices with locations from Hologram")
 
 
@@ -47,31 +47,49 @@ try:
     
     db = client.get_database("Device_Test")
     collection = db.get_collection("Device_Test")
+    #turn database into lookup table
+    mongo_locations = {}
+    for device in collection.find({}):
+        mongo_locations[device["deviceid"]] = device
+        
+
     #check to see if data has been updated and update existing mongoDb records, print number updated to terminal, 
     # and names of updated loctions
     number_updated = 0
+    new_locations = False
+    new_location_docs = []
     # collection.find({}) returns a cursor to a set of documents matching query, 
     # if argument is empty bracket, will return all documents
-    for device in collection.find({}):
-        device_id = device["deviceid"]
+    for clean_device in clean_devices:
+        device_id = clean_device["deviceid"]
 
-        if device_id in clean_devices:
-            clean_device = clean_devices[device_id]
+        if device_id in mongo_locations:
+            matching_doc = mongo_locations[device_id]
             
-            if clean_device["latitude"] != device["latitude"] or clean_device["longitude"] != device["longitude"]:
+            if clean_device["latitude"] != matching_doc["latitude"] or clean_device["longitude"] != matching_doc["longitude"]:
                 query = {"deviceid": device_id}
                 update_operation = {
                     "$set": {"latitude": clean_device["latitude"], "longitude": clean_device["longitude"],
-                    "Last Updated": clean_device["Last Updated"]}
+                    "Last Updated": date.today().isoformat()},
                     }
                 collection.update_one(query, update_operation)
                 number_updated += 1
 
         else:
-            collection.insert_one()
+            new_locations = True
+            clean_device["Last Updated"] = date.today().isoformat()
+            new_location_docs.append(clean_device)
+
+    if new_locations:
+        result = collection.insert_many(new_location_docs)
+        print("Created", len(result.inserted_ids), "new documents")
+    else:
+        print("No new documents")
+
+            
 
     if number_updated == 0:
-        print("Locations are up to date")
+        print("Existing documents are up to date")
     elif number_updated == 1:
         print("Updated ", number_updated, " device location")
     else:
