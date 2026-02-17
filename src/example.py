@@ -2,7 +2,7 @@ from pymongo import MongoClient
 import requests
 import config
 import base64
-from datetime import date
+from datetime import datetime
 #for testing location api
 
 uri = config.test_mongo_uri
@@ -42,7 +42,7 @@ try:
     #however, subsequent calls might return legitimate information. 
     #print("Retrieved ", len(clean_devices), " devices with locations from Hologram")
 
-
+    print(clean_devices)
 
     
     db = client.get_database("Device_Test")
@@ -58,8 +58,7 @@ try:
     number_updated = 0
     new_locations = False
     new_location_docs = []
-    # collection.find({}) returns a cursor to a set of documents matching query, 
-    # if argument is empty bracket, will return all documents
+    #todo - keep record of all previous locations fr a device with timestamps
     for clean_device in clean_devices:
         device_id = clean_device["deviceid"]
 
@@ -70,14 +69,16 @@ try:
                 query = {"deviceid": device_id}
                 update_operation = {
                     "$set": {"latitude": clean_device["latitude"], "longitude": clean_device["longitude"],
-                    "Last Updated": date.today().isoformat()},
+                    "Last Updated": datetime.now().isoformat(),
+                    "Previous Locations": [{"latitude": matching_doc["latitude"], "longitude": matching_doc["longitude"]}]
                     }
+                }
                 collection.update_one(query, update_operation)
                 number_updated += 1
 
         else:
             new_locations = True
-            clean_device["Last Updated"] = date.today().isoformat()
+            clean_device["Last Updated"] = datetime.now().isoformat()
             new_location_docs.append(clean_device)
 
     if new_locations:
