@@ -3,7 +3,17 @@ import requests
 import config
 import base64
 from datetime import datetime
-#for testing location api
+
+# Author: Rory L Groom
+# brief- this script is used to request location data from hologram.io and incorporate that data into our MongoDB database
+# Right now, the data is being sent to my own personal database, but the data can be easily redirected with a different 
+# connection string. 
+#
+# As of now, this will be stored in a single "location" collection. Will not search and update existing packets in entire database
+# however, it will timestamp the last time it was updated, as well as store an array of past locations with their respective 
+# timestamps 
+#
+# 
 
 uri = config.test_mongo_uri
 client = MongoClient(uri)
@@ -19,66 +29,62 @@ try:
     'Authorization': f'Basic {encoded_credentials}'
     }
     response = requests.get(config.hologram_url_location, headers= headers)
+    #convert response object to json
     data = response.json()
+    #extract useful data from response
     all_devices = data["data"]
 
     # get rest of paginated data. Stores data we want to use in variable all_devices
     while(data["continues"]):
         new_request = requests.get(f'https://dashboard.hologram.io{data["links"]["next"]}', headers= headers)
         data = new_request.json()
-        # adds data to list we want to publish to mongo
         all_devices.extend(data["data"])
 
     # filters list to only include devices with valid locations. When hologram sends out packets without location info, 
-    #long and lat will be empty strings. Turns list into lookup table
+    # long and lat will be empty strings. Turns list into lookup table
     clean_devices = []
     for device in all_devices:
         if device["latitude"] and device["longitude"]:
             clean_devices.append(device)
-            #device["Last Updated"] = date.today().isoformat()
-            #clean_devices[device["deviceid"]] = device
-
-    # prints number of devices with actual location data. Right now, its about half. 
-    #however, subsequent calls might return legitimate information. 
-    #print("Retrieved ", len(clean_devices), " devices with locations from Hologram")
-
-    print(clean_devices)
-
     
     db = client.get_database("Device_Test")
     collection = db.get_collection("Device_Test")
+
     #turn database into lookup table
     mongo_locations = {}
     for device in collection.find({}):
         mongo_locations[device["deviceid"]] = device
         
-
-    #check to see if data has been updated and update existing mongoDb records, print number updated to terminal, 
-    # and names of updated loctions
+    # used for output message
     number_updated = 0
+    # variable decides if we need to insert new documents in mongoDB
     new_locations = False
+    # stores new entries, bulk inserts new locations to mongo
     new_location_docs = []
-    #todo - keep record of all previous locations fr a device with timestamps
+    
+    # compare locations from hologram response to existing mongoDB locations
     for clean_device in clean_devices:
         device_id = clean_device["deviceid"]
-
+        # if current hologram packet device id is in lookup table
         if device_id in mongo_locations:
             matching_doc = mongo_locations[device_id]
-            
+            # check to see if location has changed at all. If so, update that document with new location from hologram response
             if clean_device["latitude"] != matching_doc["latitude"] or clean_device["longitude"] != matching_doc["longitude"]:
                 query = {"deviceid": device_id}
+                # update operation, will update 
                 update_operation = {
                     "$set": {"latitude": clean_device["latitude"], "longitude": clean_device["longitude"],
-                    "Last Updated": datetime.now().isoformat(),
-                    "Previous Locations": [{"latitude": matching_doc["latitude"], "longitude": matching_doc["longitude"]}]
-                    }
+                    "Last Updated": datetime.now()},
+                    "$push": {"Previous Locations": {"latitude": matching_doc["latitude"], "longitude": matching_doc["longitude"],
+                                                     "timestamp": matching_doc["Last Updated"]} }
                 }
                 collection.update_one(query, update_operation)
                 number_updated += 1
 
         else:
             new_locations = True
-            clean_device["Last Updated"] = datetime.now().isoformat()
+            clean_device["Last Updated"] = datetime.now()
+            clean_device["Previous Locations"] = []
             new_location_docs.append(clean_device)
 
     if new_locations:
@@ -95,9 +101,6 @@ try:
         print("Updated ", number_updated, " device location")
     else:
         print("Updated ", number_updated, " device locations")
-
-
-    
 
 
 except Exception as e:
