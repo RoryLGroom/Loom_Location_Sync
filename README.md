@@ -62,7 +62,7 @@ hologram_api_key = "your_hologram_api_key_here"
 
 Replace "your_hologram_api_key_here" with your actual Hologram API key.
 
-Security Note
+### Security Note
 
 Do not commit config.py to version control.
 Add it to your .gitignore file to prevent exposing your API credentials.
