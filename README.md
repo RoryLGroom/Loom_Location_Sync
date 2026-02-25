@@ -1,47 +1,72 @@
-# To install , first create a virtual environment, using the python command
+# Setup and Installation
+## Create a Virtual Environment
+
+Create a virtual environment using:
 
 python -m venv .venv
 
-You can replace ".venv" with any name you wish for your virtual environment folder
+You may replace .venv with any folder name of your choice.
 
-## Then to activate, depending on your platform, run command 
-------------------------------------------------------------------------------------
+## Activate the Virtual Environment
 
-### POSIX
+Activation depends on your operating system and shell.
 
-bash/zsh
+macOS / Linux (POSIX)
 
-$ source <venv>/bin/activate
+bash / zsh
+
+source <venv>/bin/activate
 
 fish
 
-$ source <venv>/bin/activate.fish
+source <venv>/bin/activate.fish
 
-csh/tcsh
+csh / tcsh
 
-$ source <venv>/bin/activate.csh
+source <venv>/bin/activate.csh
 
-pwsh
+PowerShell (pwsh)
 
-$ <venv>/bin/Activate.ps1
+<venv>/bin/Activate.ps1
+Windows
 
-### Windows
+Command Prompt (cmd.exe)
 
-cmd.exe
-
-C:\> <venv>\Scripts\activate.bat
+<venv>\Scripts\activate.bat
 
 PowerShell
 
-PS C:\> <venv>\Scripts\Activate.ps1
+<venv>\Scripts\Activate.ps1
 
-## After virtual environment is created and activated, install dependencies by using command 
+Replace <venv> with the name of your virtual environment folder (e.g., .venv).
+
+## Install Dependencies
+
+Once the virtual environment is activated, install required packages:
 
 pip install -r requirements.txt
+Hologram API Configuration
 
-# Using Hologram API 
-create a seperate file in root directory called .env, and add a file called config.py. 
+To use the Hologram API, create a configuration file to store your credentials.
 
-In this file, add a variable called MY_API_KEY, and assign it the value of the hologram API key. 
+### Create Configuration File
 
-Ex. MY_API_KEY = "secret_key_here"
+In the root directory of the project, create a file named:
+
+config.py
+### Add Your API Key
+
+Inside config.py, define your API key:
+
+hologram_api_key = "your_hologram_api_key_here"
+
+Replace "your_hologram_api_key_here" with your actual Hologram API key.
+
+Security Note
+
+Do not commit config.py to version control.
+Add it to your .gitignore file to prevent exposing your API credentials.
+
+Example .gitignore entry:
+
+config.py

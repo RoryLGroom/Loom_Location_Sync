@@ -96,7 +96,7 @@ try:
             
 
     if number_updated == 0:
-        print("Existing documents are up to date")
+        print("No updated locations")
     elif number_updated == 1:
         print("Updated ", number_updated, " device location")
     else:
