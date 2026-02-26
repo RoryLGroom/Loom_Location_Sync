@@ -70,3 +70,10 @@ Add it to your .gitignore file to prevent exposing your API credentials.
 Example .gitignore entry:
 
 config.py
+
+# Documentation and Demo Video
+### Demo Video
+<link> https://youtu.be/SPvb7UfcVZg </link>
+
+### Documentation 
+<link> https://docs.google.com/document/d/1iaowcdVThSG-IY-LXu3ZF7BfUnMEFDJIBt4f9tBCXrU/edit?usp=sharing </link>
