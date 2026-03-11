@@ -4,7 +4,7 @@
 set -e
 # make sure everything is updated
 sudo apt update
-# make sure we have what we need to create virtual environment
+# make sure we have what we need to create virtual environment and install requirements
 sudo apt install -y python3 python3-venv python3-pip
 # detects where the install script lives, and uses that for the location where we want to install. 
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
