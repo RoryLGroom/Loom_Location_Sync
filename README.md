@@ -1,79 +1,76 @@
 # Setup and Installation
-## Create a Virtual Environment
 
-Create a virtual environment using:
+This program is designed to run in a Linux environment.
 
-python -m venv .venv
+## 1. Clone the repository
 
-You may replace .venv with any folder name of your choice.
+Clone the repository anywhere in your filesystem.
+Be sure to note the location, as you will need it later when setting up the scheduler.
 
-## Activate the Virtual Environment
+## 2. Add the config file
 
-Activation depends on your operating system and shell.
+Add the config file inside:
 
-macOS / Linux (POSIX)
+Loom_Map/src
+### Option 1 — Transfer an existing config
 
-bash / zsh
+If you already have a working config file, you can transfer it using SCP:
+```bash
+scp path/to/my/config.py user@machine_ip:path/to/Loom_Map/src
+```
+### Option 2 — Create the file manually
 
-source <venv>/bin/activate
-
-fish
-
-source <venv>/bin/activate.fish
-
-csh / tcsh
-
-source <venv>/bin/activate.csh
-
-PowerShell (pwsh)
-
-<venv>/bin/Activate.ps1
-Windows
-
-Command Prompt (cmd.exe)
-
-<venv>\Scripts\activate.bat
-
-PowerShell
-
-<venv>\Scripts\Activate.ps1
-
-Replace <venv> with the name of your virtual environment folder (e.g., .venv).
-
-## Install Dependencies
-
-Once the virtual environment is activated, install required packages:
-
-pip install -r requirements.txt
-Hologram API Configuration
-
-To use the Hologram API, create a configuration file to store your credentials.
-
-### Create Configuration File
-
-In the root directory of the project, create a file named:
-
+Create a file named:
+```bash
 config.py
-### Add Your API Key
+```
+with the following variables defined:
+```python
+org_id = ""
+hologram_api_key = ""
+credentials = f"apikey:{hologram_api_key}"
+loom_mongo_uri = ""
+hologram_url_location = f"https://dashboard.hologram.io/api/a/devices/locations?orgid={org_id}"
+```
+## 3. Make the install script executable
 
-Inside config.py, define your API key:
+Run:
+```bash
+chmod +x install.sh
+```
+## 4. Run the install script
+```bash
+./install.sh
+```
+This script will:
 
-hologram_api_key = "your_hologram_api_key_here"
+create the Python virtual environment
 
-Replace "your_hologram_api_key_here" with your actual Hologram API key.
+install dependencies
 
-### Security Note
+prepare the runtime environment
 
-Do not commit config.py to version control.
-Add it to your .gitignore file to prevent exposing your API credentials.
+## 5. Schedule the job with cron
 
-Example .gitignore entry:
+Open the cron scheduler:
+```bash
+crontab -e
+```
+Add the following line at the bottom:
+```bash
+0 0,12 * * * /path/to/Loom_Map/script.sh >> /path/to/Loom_Map/cron.log 2>&1
+```
+This schedules the script to run twice per day:
 
-config.py
+00:00 (midnight)
 
-# Documentation and Demo Video
-### Demo Video
-<link> https://youtu.be/SPvb7UfcVZg </link>
+12:00 (noon)
 
-### Documentation 
-<link> https://docs.google.com/document/d/1iaowcdVThSG-IY-LXu3ZF7BfUnMEFDJIBt4f9tBCXrU/edit?usp=sharing </link>
+## Documentation and Demo
+Demo Video
+
+https://youtu.be/SPvb7UfcVZg
+
+Full Documentation
+
+https://docs.google.com/document/d/1iaowcdVThSG-IY-LXu3ZF7BfUnMEFDJIBt4f9tBCXrU/edit?usp=sharing
