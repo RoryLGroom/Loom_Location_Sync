@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# outputs commands in the cron log
+# outputs commands in script_output.txt
 set -x
 # locates directory where script.sh lives
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
