@@ -14,7 +14,7 @@ python3 -m venv .venv
 # activate the virtual environment
 source .venv/bin/activate
 # install the requiremnts in the local repo
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 # change permissions for bash script to be ran as an executable
 chmod +x script.sh
 
