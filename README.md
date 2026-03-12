@@ -67,10 +67,14 @@ This schedules the script to run twice per day:
 12:00 (noon)
 
 ## Documentation and Demo
-Demo Video
+### Demo Video
 
 https://youtu.be/SPvb7UfcVZg
 
-Full Documentation
+### Full Documentation
 
 https://docs.google.com/document/d/1iaowcdVThSG-IY-LXu3ZF7BfUnMEFDJIBt4f9tBCXrU/edit?usp=sharing
+
+### Install and Scheduling
+
+https://youtu.be/puvYCw-Wz0A
