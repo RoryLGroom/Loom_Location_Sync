@@ -2,6 +2,6 @@
 src/config.py
 src/__pycache__
 src/main.py
-cron.log
-script_output.txt
+cron.log/
+script_output.txt/
 
