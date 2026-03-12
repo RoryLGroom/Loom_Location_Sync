@@ -1,3 +1,5 @@
+# About
+Tracks and synchronizes IoT device locations in real time, leveraging Hologram’s REST API with MongoDB as a location cache for persistent storage and fast retrieval.
 # Setup and Installation
 
 This program is designed to run in a Linux environment.
