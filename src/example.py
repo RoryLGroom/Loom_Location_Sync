@@ -2,7 +2,8 @@ from pymongo import MongoClient
 import requests
 import config
 import base64
-from datetime import datetime
+from datetime import datetime, timezone
+from geopy.distance import geodesic
 
 # Author: Rory L Groom
 # brief- this script is used to request location data from hologram.io and incorporate that data into our MongoDB database
@@ -68,13 +69,19 @@ try:
         # if current hologram packet device id is in lookup table
         if device_id in mongo_locations:
             matching_doc = mongo_locations[device_id]
-            # check to see if location has changed at all. If so, update that document with new location from hologram response
-            if clean_device["latitude"] != matching_doc["latitude"] or clean_device["longitude"] != matching_doc["longitude"]:
+
+            # calculate the distance between the old and the new locations. If the distance is greater than the range specified by hologram, then update. 
+            # otherwise, keep the location the same. Helps reduce redundancy and saves space in MongoDB
+            old = (matching_doc["latitude"], matching_doc["longitude"])
+            new = (clean_device["latitude"], clean_device["longitude"])
+            distance_apart = geodesic(old,new).meters
+
+            if distance_apart > clean_device["range"]:
                 query = {"deviceid": device_id}
                 # update operation, will update 
                 update_operation = {
                     "$set": {"latitude": clean_device["latitude"], "longitude": clean_device["longitude"],
-                    "Last Updated": datetime.now()},
+                    "Last Updated (UTC)": datetime.now(timezone.utc)},
                     "$push": {"Previous Locations": {"latitude": matching_doc["latitude"], "longitude": matching_doc["longitude"],
                                                      "timestamp": matching_doc["Last Updated"]} }
                 }
@@ -83,7 +90,7 @@ try:
 
         else:
             new_locations = True
-            clean_device["Last Updated"] = datetime.now()
+            clean_device["Last Updated (UTC)"] = datetime.now(timezone.utc)
             clean_device["Previous Locations"] = []
             new_location_docs.append(clean_device)
 
