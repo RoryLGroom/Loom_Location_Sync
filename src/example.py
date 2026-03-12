@@ -83,7 +83,7 @@ try:
                     "$set": {"latitude": clean_device["latitude"], "longitude": clean_device["longitude"],
                     "Last Updated (UTC)": datetime.now(timezone.utc)},
                     "$push": {"Previous Locations": {"latitude": matching_doc["latitude"], "longitude": matching_doc["longitude"],
-                                                     "timestamp": matching_doc["Last Updated"]} }
+                                                     "timestamp": matching_doc["Last Updated (UTC)"]} }
                 }
                 collection.update_one(query, update_operation)
                 number_updated += 1
