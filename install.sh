@@ -9,8 +9,10 @@ sudo apt install -y python3 python3-venv python3-pip
 # detects where the install script lives, and uses that for the location where we want to install. 
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$PROJECT_DIR"
-# create virtual environment for intalling dependencies
-python3 -m venv .venv
+# create virtual environment for intalling dependencies, with cehck to make sure it wasnt already created
+if [ ! -d ".venv" ]; then
+    python3 -m venv .venv
+fi 
 # activate the virtual environment
 source .venv/bin/activate
 # install the requiremnts in the local repo

@@ -81,7 +81,7 @@ try:
                 # update operation, will update 
                 update_operation = {
                     "$set": {"latitude": clean_device["latitude"], "longitude": clean_device["longitude"],
-                    "Last Updated (UTC)": datetime.now(timezone.utc)},
+                            "Last Updated (UTC)": datetime.now(timezone.utc)},
                     "$push": {"Previous Locations": {"latitude": matching_doc["latitude"], "longitude": matching_doc["longitude"],
                                                      "timestamp": matching_doc["Last Updated (UTC)"]} }
                 }
