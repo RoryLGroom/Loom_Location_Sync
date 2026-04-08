@@ -1,0 +1,32 @@
+No new documents
+No updated locations
+Traceback (most recent call last):
+  File "/home/rory/Desktop/DemoVid/src/example.py", line 6, in <module>
+    from geopy.distance import geodesic
+ModuleNotFoundError: No module named 'geopy'
+No new documents
+Updated  1  device location
+./script.sh: line 9: Y-03-11_23-09-59 /home/rory/Desktop/DemoVid/.venv/bin/python src/example.py: No such file or directory
+./script.sh: line 9: 2026-03-11_23-10-27 /home/rory/Desktop/DemoVid/.venv/bin/python src/example.py: No such file or directory
+./script.sh: line 9: 2026-03-11_23-10-41 /home/rory/Desktop/DemoVid/.venv/bin/python src/example.py: No such file or directory
+./script.sh: line 11: 2026-03-11_23-17-56 : command not found
+2026-03-11_23-21-43 No new documents
+No updated locations
+2026-03-11_23-22-24 \n No new documents
+No updated locations
+2026-03-11_23-23-59 \n No new documents
+No updated locations
+2026-03-11_23-25-54
+No new documents
+No updated locations
+2026-03-12_00-00-01
+
+2026-03-12_00-05-25
+No new documents
+No updated locations
+2026-03-12_00-11-20
+No new documents
+No updated locations
+2026-03-12_00-13-03
+No new documents
+No updated locations
